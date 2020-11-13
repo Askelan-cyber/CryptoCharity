@@ -42,7 +42,7 @@ def init_contract(abi_path:str, contract_address:str):
         abi = json.load(json_file)
     return w3.eth.contract(address=contract_address, abi=abi)
 
-crypto_charity = init_contract("CryptoCharityABI.json", os.getenv("CRYPTO_CHARITY_ADDRESS"))
+charity_contract = init_contract("CharityMakerABI.json", os.getenv("CHARITY_MAKER_ADDRESS"))
 
 headers = {
     "Content-Type": "application/json",
@@ -80,22 +80,10 @@ def pinJSONtoIPFS(json):
 #     return receipt
 
 def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date)
-    
-    # Backend parameters:
-    # charityEvent (uint > struct)
-    # recipient payable address
-    # uint startDate
-    # uint endDate
-    # isApproved: bool
-    # URI (link to IPFS): json format
-    # chartiyEventName: str
-    # Recipient address
-    # uint GoalAmount
 
-    
     # convert string start and end dates to datetime (if they aren't already datetime objects)
     if not isinstance(start_date, dt):
-        start_date = dt.strptime(start_date, "%Y/%m/%d") # 1996/08/30
+        start_date = dt.strptime(start_date, "%Y/%m/%d") # 2020/01/26
     if not isinstance(end_date, dt):
         end_date = dt.strptime(end_date, "%Y/%m/%d")
 
@@ -103,10 +91,24 @@ def register_charity_event(event_name: str, event_recipient: str, funding_goal: 
     start_date = start_date.timestamp()
     end_date = end_date.timestamp()
 
-    # create URI for storing in pinata
+    # create charity_info dict
+    charity_info = {
+        charityEventName: event_name,
+        # charityEventRecipient: event_recipient,
+        goalAmount: funding_goal
+    }
 
+    # convert charity_info to json_charity_info (json format) and pin to IPFS via pinata api function
+    json_charity_info = convertDataToJSON(charity_info)
+    ipfs_link = pinJSONtoIPFS(json_charity_info)
 
-    # create charity event with default isApproved: FALSE
-
+    # create charity event in the block chain
+    # registryCharityEvent(payable address recipient, uint startDate, uint endDatestr memory eventURI) public 
+    tx_hash = charity_contract.functions.registryCharityEvent(event_recipient, start_date, end_date, ipfs_link).transact({"from": w3.eth.accounts[0]})
+    receipt  = w3.eth.waitForTransactionReceipt(tx_hash)
+    
     # return charity_event_id int
+    # ??how do we return the charity event id from the solidity contract when we've used web3 .transact to call the function that would logically return the charity event id?? 
+    # We know the solidity registerCharityEvent will also emit an event on the block chain--perhaps we retrieve the charity event id from that, but how do we isolate the correct
+    # event without already knowing the charity id?
     return charity_event_id

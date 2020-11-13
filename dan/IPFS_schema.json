@@ -1,0 +1,6 @@
+// Information about Charity Events
+
+{
+    charityEventName: "Charity Event Name",
+    goalAmount: funding_goal
+}
