@@ -65,20 +65,14 @@ def pinJSONtoIPFS(json):
     return f"ipfs://{ipfs_hash}"
 
 
-# DO NOT USE
-# def register_owner(contact_info: dict, owner_address:str):
+def get_charityEventID_from_URI(event_URI: str):
+    
+    charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"URI": event_URI})
+    charity_event_registrations = charity_event_reg_filter.get_all_entries()
+    
+    return charity_event_registrations[-1].charityEventID
 
-#     # use contact_info to create URI using pinata API
-#     data = convertDataToJSON(contact_info)
-#     ipfs_link = pinJSONtoIPFS(data)
-
-#     # call contract to create new owner
-#     tx_hash = AssetContract.functions.registerOwner(owner_address, ipfs_link)\
-#         .transact({"from": w3.eth.accounts[0]})
-
-#     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-#     return receipt
-
+# THIS IS INCOMPLETE AND NOT YET FUNCTIONAL
 def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date)
 
     # convert string start and end dates to datetime (if they aren't already datetime objects)
@@ -107,8 +101,26 @@ def register_charity_event(event_name: str, event_recipient: str, funding_goal: 
     tx_hash = charity_contract.functions.registryCharityEvent(event_recipient, start_date, end_date, ipfs_link).transact({"from": w3.eth.accounts[0]})
     receipt  = w3.eth.waitForTransactionReceipt(tx_hash)
     
-    # return charity_event_id int
-    # ??how do we return the charity event id from the solidity contract when we've used web3 .transact to call the function that would logically return the charity event id?? 
-    # We know the solidity registerCharityEvent will also emit an event on the block chain--perhaps we retrieve the charity event id from that, but how do we isolate the correct
-    # event without already knowing the charity id?
+    # obtain charity_event_id from block chain event
+        # ??how do we return the charity event id from the solidity contract when we've used web3 .transact to call the function that would logically return the charity event id?? 
+        # We know the solidity registerCharityEvent will also emit an event on the block chain--perhaps we retrieve the charity event id from that, but how do we isolate the correct
+        # event without already knowing the charity id?  Does it make sense to try to use the URI to do an event lookup to then return the charity event id?
+    charity_event_id = get_charityEventID_from_URI(ipfs_link)
+
     return charity_event_id
+
+def update_charity_event_approval(charity_event_id: uint, is_approved: bool)
+    # call contract funtion to update approval
+    tx_hash = charity_contract.functions.updateCharityEventApproval(charity_event_id, is_approved)\
+        .transact({"from": w3.eth.accounts[0]})
+
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    return receipt
+    
+
+
+# code snippets:
+# updateCharityEventApproval
+# contract.functions.test(52).call()
+
+
