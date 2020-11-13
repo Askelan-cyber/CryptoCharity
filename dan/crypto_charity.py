@@ -12,7 +12,7 @@ load_dotenv()
 Planned Functions:
     register_charity_event(charity_event_name: str, recipient: str, goal_amt: int, start_date: str, end_date: str)
     update_charity_event_approval(charity_event_id: uint, is_approved: bool)
-    donate(charityEventId: uint, donorName: str, amount: int)
+    donate(charity_event_id: uint, amount: int, donor_name=None)
     Note: will need to accept “hidden” private key to submit payment
     get_charity_event(charity_event_id)
     view_active_charity_events()
@@ -116,8 +116,38 @@ def update_charity_event_approval(charity_event_id: uint, is_approved: bool)
 
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     return receipt
+
+
+def create_raw_tx(account, recipient, amount):
+    gasEstimate = w3.eth.estimateGas(
+        {"from": account.address, "to": recipient, "value": amount}
+    )
+    return {
+        "from": account.address,
+        "to": recipient,
+        "value": amount,
+        "gasPrice": w3.eth.gasPrice,
+        "gas": gasEstimate,
+        "nonce": w3.eth.getTransactionCount(account.address),
+    }
+
+
+def send_tx(account, recipient, amount):
+    tx = create_raw_tx(account, recipient, amount)
+    signed_tx = account.sign_transaction(tx)
+    result = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
+    print(result.hex())
+    return result.hex()
+
+# THIS IS INCOMPLETE AND NOT YET FUNCTIONAL   
+def donate(charity_event_id: uint, amount: int, donor_name=None)
     
 
+    # tx_hash = charity_contract.functions.donate(charity_event_id, donor_name)\
+    #     .transact({"from": w3.eth.accounts[0]})
+
+    # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    return receipt
 
 # code snippets:
 # updateCharityEventApproval
