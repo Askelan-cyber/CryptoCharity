@@ -6,6 +6,13 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime as dt
 
+# for ETH transactions
+from eth_account import Account
+
+# for obscuring STDIN input
+from getpass import getpass
+
+
 load_dotenv()
 
 """
@@ -141,7 +148,7 @@ def send_tx(account, recipient, amount):
 
 # THIS IS INCOMPLETE AND NOT YET FUNCTIONAL   
 def donate(charity_event_id: uint, amount: int, donor_name=None)
-    
+
 
     # tx_hash = charity_contract.functions.donate(charity_event_id, donor_name)\
     #     .transact({"from": w3.eth.accounts[0]})
