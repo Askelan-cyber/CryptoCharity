@@ -6,7 +6,7 @@ import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 contract CharityMaker {
     
     struct CharityEvent {
-        address payable recipient;
+        address payable charityEventID;
         string charityEventName;
         uint startDate;
         uint endDate;
@@ -15,7 +15,25 @@ contract CharityMaker {
         string URI;
     }
     
-    mapping(bytes32 => CharityEvent) public CharityEvents;
+    struct donor {
+        address payable recipient;
+        string donorName;
+        string donorAmount;
+    }
+    //not sure whether to use a public array or a mapped byte array
+    donor[] public donors;
+    CharityEvent[] public CharityEvents;
+    //need help deciding on above or below use
+    mapping(bytes32 => mapping(uint => CharityEvent[])) public charityBook;
+    mapping(bytes32 => mapping(uint => donor[])) public donorBook;
+    
+    function getCharityEvents() external view returns(CharityEvent[] memory) {
+        return CharityEvents;
+    }
+    
+    function getDonors() external view returns(donor[] memory) {
+        return CharityEvents;
+    }    
 
     event charityEventRegistration(
         uint charityEventID,
@@ -25,24 +43,24 @@ contract CharityMaker {
     event donation (
         string donorName,
         uint amount,
-        uint charityEventID
+        address payable charityEventID
     );
     
-    address payable donor;
-    
-    constructor() public {
-        donor = msg.sender;
-    }
 
     function registerCharityEvent(
-        string memory charityEventName,
-        string memory recipient,
-        uint goalAmount,
-        uint startDate,
-        uint endDate) public 
-        
+        string memory _charityEventName,
+        uint _goalAmount,
+        uint _startDate,
+        uint _endDate,
+        string memory _URI,
+        bool _isApproved) public 
     {
-   
+        if(_isApproved == true) {
+            .charityEventName = _charityEventName;
+            
+        } else {
+
+        }   
     }
     
     function updateCharityEventApproval(
@@ -69,7 +87,7 @@ contract CharityMaker {
         
     } 
     
-    modifier onlyApprover() {
+    modifier setApproval() {
         bool allowed = false;
         require(allowed == true, 'only approver allowed');
         _;
