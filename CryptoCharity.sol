@@ -2,9 +2,16 @@ pragma solidity 0.6.3;
 
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol';
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol';
-import '';
+import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/drafts/Counters.sol';
 
 contract CharityMaker {
+    
+    using Counters for Counters.Counter;
+    
+    mapping(address => bool) public admins;
+    admins[msg.sender] = true;
+    
+    Counters.Counter private CharityEventIDs;
     
     struct CharityEvent {
         address payable charityEventAddress;
@@ -14,33 +21,53 @@ contract CharityMaker {
         string URI;
     }
     
-    struct donor {
-        address payable recipient;
-        string donorName;
-        string donorAmount;
-    }
-    
     //need help deciding on above or below use
-    mapping(uint => charityEventID)) public charityBook;
-    mapping(uint => recipientID)) public donorBook;
+    mapping(uint => charityEventID) public charityBook;
+    mapping(uint => recipientID) public donorBook;
+    
+    
+    event charityEventRegistration(
+        uint charityEventID,
+        uint startDate,
+        uint endDate        
+    );    
     
     function registerCharityEvent(
         address payable _charityEventAddress,
         uint _startDate,
         uint _endDate,
-        string memory _URI,
-        ) public 
+        string memory _URI
+        ) public return (uint)
     {
-        
-        charityBook[] = CharityEvent(_charityEventAddress, _startDate, _endDate, false, _URI);
+        CharityEventIDs.increment();
+        uint CharityEventID = CharityEventIDs.current();
+        charityBook[CharityEventID] = CharityEvent(_charityEventAddress, _startDate, _endDate, false, _URI);
+        emit charityEventRegistration(CharityEventID, _startDate, _endDate);
+        return CharityEventID;
     }
     
-    event charityEventRegistration(
-        uint charityEventID,
-        string URI
-    );    
+    function updateCharityEventApproval(
+        //check if admin
+        uint _charityEventID,
+        bool _isApproved) 
+        public
+    {
+        require(admins[msg.sender], "We know who you are!!!");
+        charityBook[_charityEventID].isApproved = _isApproved;
+    }
     
+    function updateAdmins(
+        address admin, bool isAdmin) public {
+        require(admins[msg.sender], "We know who you are!!!");
+        admins[admin] = isAdmin;
+    }
     
+    function getCharityEvent(
+        uint charityEventID) 
+        public view
+    {    
+    
+    }
     
     function getCharityEvents(uint charityEventID) external view returns(bytes32) {
         return charityBook;
@@ -138,12 +165,6 @@ contract CharityMaker {
         public 
     {
         
-    }    
-    
-    function getCharityEvent(
-        uint charityEventID) 
-        public view
-    {
         
     } 
     
