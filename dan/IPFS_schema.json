@@ -1,0 +1,6 @@
+// Information about Charity Events
+
+{
+    charityEventName: "Name of charity event",
+    goalAmount: uint
+}
