@@ -3,17 +3,17 @@ from web3.auto import w3
 import json
 import requests
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from datetime import datetime as dt
 
-# for ETH transactions
-from eth_account import Account
+## Moved to front end
+# # for ETH transactions
+# from eth_account import Account
 
-# for obscuring STDIN input
-from getpass import getpass
+# # for obscuring STDIN input
+# from getpass import getpass
 
-
-load_dotenv()
+# load_dotenv()
 
 """
 Planned Functions:
@@ -42,14 +42,14 @@ Planned User interface actions:
     Cancel event > call update_charity_event_approval (example)
 
 """
+## Moved to front end
+# def init_contract(abi_path:str, contract_address:str):
+#     """ Initialize a contract given the abi and address """
+#     with open(abi_path) as json_file:
+#         abi = json.load(json_file)
+#     return w3.eth.contract(address=contract_address, abi=abi)
 
-def init_contract(abi_path:str, contract_address:str):
-    """ Initialize a contract given the abi and address """
-    with open(abi_path) as json_file:
-        abi = json.load(json_file)
-    return w3.eth.contract(address=contract_address, abi=abi)
-
-charity_contract = init_contract("CharityMakerABI.json", os.getenv("CHARITY_MAKER_ADDRESS"))
+# charity_contract = init_contract("CharityMakerABI.json", os.getenv("CHARITY_MAKER_ADDRESS"))
 
 headers = {
     "Content-Type": "application/json",
@@ -71,15 +71,12 @@ def pinJSONtoIPFS(json):
     ipfs_hash = req.json()["IpfsHash"]
     return f"ipfs://{ipfs_hash}"
 
-
-def get_charityEventID_from_URI(event_URI: str):
+## No longer needed
+# def get_charityEventID_from_URI(event_URI: str):
     
-    charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"URI": event_URI})
-    charity_event_registrations = charity_event_reg_filter.get_all_entries()
-
-    
-    
-    return charity_event_registrations[-1].charityEventID
+#     charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"URI": event_URI})
+#     charity_event_registrations = charity_event_reg_filter.get_all_entries()
+#     return charity_event_registrations[-1].charityEventID
 
 # THIS IS INCOMPLETE AND NOT YET FUNCTIONAL
 def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date)
@@ -149,7 +146,7 @@ def send_tx(account, recipient, amount):
     return result.hex()
 
 # THIS IS INCOMPLETE AND NOT YET FUNCTIONAL   
-def donate(charity_event_id: uint, amount: int, donor_name=None)
+def donate(charity_event_id: uint, amount: iint, donor_private, donor_name="Anonymous")
 
 
     # tx_hash = charity_contract.functions.donate(charity_event_id, donor_name)\
