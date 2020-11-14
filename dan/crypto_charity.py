@@ -76,6 +76,8 @@ def get_charityEventID_from_URI(event_URI: str):
     
     charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"URI": event_URI})
     charity_event_registrations = charity_event_reg_filter.get_all_entries()
+
+    
     
     return charity_event_registrations[-1].charityEventID
 
@@ -161,3 +163,9 @@ def donate(charity_event_id: uint, amount: int, donor_name=None)
 # contract.functions.test(52).call()
 
 
+
+
+user input : register 
+event_id
+1. register
+2. view past events
