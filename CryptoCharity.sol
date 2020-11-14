@@ -8,7 +8,7 @@ contract CharityMaker {
     using Counters for Counters.Counter;
     
     mapping(address => bool) public admins;
-    admins[msg.sender] = true;
+    //admins[msg.sender] = true;
     
     Counters.Counter private CharityEventIDs;
     
@@ -33,8 +33,10 @@ contract CharityMaker {
         uint _startDate,
         uint _endDate,
         string memory _URI
-        ) public return (uint)
+        ) public returns (uint)
     {
+        uint startD = charityBook[CharityEventID].startDate;
+        uint endD = charityBook[CharityEventID].endDate;        
         require(now >= startD  && now <= endD, "Start date must be after current date.");
         CharityEventIDs.increment();
         uint CharityEventID = CharityEventIDs.current();
@@ -75,12 +77,10 @@ contract CharityMaker {
     {
         uint startD = charityBook[CharityEventID].startDate;
         uint endD = charityBook[CharityEventID].endDate;
-        require(now >= startD  && now <= endD, "Donation must be made within the start and end date parameters.");
-        //get charity address
+        require(now >= startD  && now <= endD, "Donation must be made within the start and end date parameters.");        
+        require(charityBook[CharityEventID].isApproved == true, "This charity is currently unable to recieve funds.");
         address payable charityAddress = charityBook[CharityEventID].charityEventAddress;
-        //transfer to charity address
         charityAddress.transfer(msg.value);
-        //log payment to contract using the event Donate
         emit Donate(_donorName, msg.value, _charityEventID);
     }      
 }
