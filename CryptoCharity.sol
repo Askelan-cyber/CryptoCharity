@@ -1,6 +1,5 @@
 pragma solidity 0.6.3;
 
-import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol';
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol';
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/drafts/Counters.sol';
 
@@ -21,10 +20,7 @@ contract CharityMaker {
         string URI;
     }
     
-    //need help deciding on above or below use
     mapping(uint => charityEventID) public charityBook;
-    mapping(uint => recipientID) public donorBook;
-    
     
     event charityEventRegistration(
         uint charityEventID,
@@ -39,6 +35,7 @@ contract CharityMaker {
         string memory _URI
         ) public return (uint)
     {
+        require(now >= startD  && now <= endD, "Start date must be after current date.");
         CharityEventIDs.increment();
         uint CharityEventID = CharityEventIDs.current();
         charityBook[CharityEventID] = CharityEvent(_charityEventAddress, _startDate, _endDate, false, _URI);
@@ -52,7 +49,7 @@ contract CharityMaker {
         bool _isApproved) 
         public
     {
-        require(admins[msg.sender], "We know who you are!!!");
+        require(admins[msg.sender], "You do not have permission to approve charity events.");
         charityBook[_charityEventID].isApproved = _isApproved;
     }
     
@@ -62,117 +59,28 @@ contract CharityMaker {
         admins[admin] = isAdmin;
     }
     
-    function getCharityEvent(
-        uint charityEventID) 
-        public view
-    {    
+//Donor section
     
-    }
-    
-    function getCharityEvents(uint charityEventID) external view returns(bytes32) {
-        return charityBook;
-    }
-    
-    function getDonors(uint charityEventID) external view returns(bytes32) {
-        return charityBook;
-    }
-    
-    event donation (
+    event Donate(
         string donorName,
-        uint amount,
-        address payable charityEventID
-    );
-    
-    
-    function updateCharityEventApproval(
-        //check if admin
-        uint charityEventID,
-        bool _isApproved) 
-        public
-    {
-        
-    }
+        uint donorAmount,
+        uint charityEventID
+    );      
     
     function donate(
-        uint charityEventID,
-        string memory donorName) 
-        public 
+        uint _charityEventID,
+        string memory _donorName
+        ) 
+        public payable
     {
-        
-    }    
-    
-    function getCharityEvent(
-        uint charityEventID) 
-        public view
-    {
-        
-    } 
-    
-    modifier setApproval() {
-        bool allowed = false;
-        require(allowed == true, 'only approver allowed');
-        _;
-    }    
-    
-    
-};
-    }
-    
-    function getDonors() external view returns(donor[] memory) {
-        return CharityEvents;
-    }    
-
-    event charityEventRegistration(
-        uint charityEventID,
-        string URI
-    );
-    
-    event donation (
-        string donorName,
-        uint amount,
-        address payable charityEventID
-    );
-    
-
-    function registerCharityEvent(
-        string memory _charityEventName,
-        uint _goalAmount,
-        uint _startDate,
-        uint _endDate,
-        string memory _URI,
-        bool _isApproved) public 
-    {
-        if(_isApproved == true) {
-            .charityEventName = _charityEventName;
-            
-        } else {
-
-        }   
-    }
-    
-    function updateCharityEventApproval(
-        //check if admin
-        uint charityEventID,
-        bool _isApproved) 
-        public
-    {
-        
-    }
-    
-    function donate(
-        uint charityEventID,
-        string memory donorName) 
-        public 
-    {
-        
-        
-    } 
-    
-    modifier setApproval() {
-        bool allowed = false;
-        require(allowed == true, 'only approver allowed');
-        _;
-    }    
-    
-    
+        uint startD = charityBook[CharityEventID].startDate;
+        uint endD = charityBook[CharityEventID].endDate;
+        require(now >= startD  && now <= endD, "Donation must be made within the start and end date parameters.");
+        //get charity address
+        address payable charityAddress = charityBook[CharityEventID].charityEventAddress;
+        //transfer to charity address
+        charityAddress.transfer(msg.value);
+        //log payment to contract using the event Donate
+        emit Donate(_donorName, msg.value, _charityEventID);
+    }      
 }
