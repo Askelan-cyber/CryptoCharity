@@ -4,10 +4,6 @@ import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol';
 
 contract CharityMaker {
-    struct Token {
-        bytes32 ticker;
-        address tokenAddress;
-    }
     
     struct CharityEvent {
         address payable recipient;
@@ -32,16 +28,20 @@ contract CharityMaker {
         uint charityEventID
     );
     
+    address payable donor;
+    
     constructor() public {
         donor = msg.sender;
     }
 
     function registerCharityEvent(
-        string charityEventName,
-        string recipient,
+        string memory charityEventName,
+        string memory recipient,
         uint goalAmount,
         uint startDate,
-        uint endDate) public {return(str);
+        uint endDate) public 
+        
+    {
    
     }
     
@@ -49,48 +49,28 @@ contract CharityMaker {
         //check if admin
         uint charityEventID,
         bool _isApproved) 
-        public 
-        {return ();
+        public
+    {
         
     }
     
     function donate(
         uint charityEventID,
-        string donorName) 
+        string memory donorName) 
         public 
-        {return ();
+    {
         
     }    
     
     function getCharityEvent(
         uint charityEventID) 
         public view
-        {return ();
+    {
         
     } 
     
-    function approveTransfer(uint id) external onlyApprover() {
-        require(transfers[id].sent == false, 'transfer has already been sent');
-        require(approvals[msg.sender][id] == false, 'cannot approve transfer twice');
-        
-        approvals[msg.sender][id] = true;
-        transfers[id].approvals++;
-        
-        if(transfers[id].approvals >= quorum) {
-            transfers[id].sent = true;
-            address payable to = transfers[id].to;
-            uint amount = transfers[id].amount;
-            to.transfer(amount);
-        }
-    }    
-    
     modifier onlyApprover() {
         bool allowed = false;
-        for(uint i = 0; i < approvers.length; i++) {
-            if(approvers[i] == msg.sender) {
-                allowed = true;
-            }
-        }
         require(allowed == true, 'only approver allowed');
         _;
     }    
