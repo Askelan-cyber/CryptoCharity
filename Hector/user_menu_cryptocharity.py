@@ -30,7 +30,7 @@ def register_charity_event():
 
     return charity_event_object
 
-def update_charity_event_approval():
+def update_charity_event_approval(event_id):
     # charity_event_id: uint, is_approved: bool
     # where is_approved coming from
 
@@ -49,6 +49,36 @@ def donate():
     identify_charity = input("Which charity event would you like to donate to?")
     donation = input("Donation amount:")
     # donator_wallet = input("What is your wallet address?")
+    # donator_private_key = input("Please enter your private key")
 
-input("What would you like to do?")
+def view_donations():
+
+def view_charity_events():
+
+
+
+
+
+option_menu= input("What would you like to do? Options are: Register Charity Event, View Approval Status, Donate, View Donations, View Charity Events, Cancel Charity Events")
+
+if option_menu== "Register Charity Event":
+    register_charity_event()
+
+elif option_menu == "View Approval Status":
+    # Does the user know their event_id?
+    # event_approval = input("What charity event?")
+    update_charity_event_approval(event_id)
+
+elif option_menu == "Donate":
+    donate():
+
+elif option_menu == "View Donations":
+    view_donations()
+
+elif option_menu == "View Charity Events":
+    view_charity_events()
+
+elif option_menu == "Cancel Charity Event"
+    cancel_charity_event()
+
 # options are register charity event, donate, see approval status, view donations, view active charities,
