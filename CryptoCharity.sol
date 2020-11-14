@@ -2,15 +2,14 @@ pragma solidity 0.6.3;
 
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol';
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol';
+import '';
 
 contract CharityMaker {
     
     struct CharityEvent {
-        address payable charityEventID;
-        string charityEventName;
+        address payable charityEventAddress;
         uint startDate;
         uint endDate;
-        uint goalAmount;
         bool isApproved;
         string URI;
     }
@@ -20,15 +19,76 @@ contract CharityMaker {
         string donorName;
         string donorAmount;
     }
-    //not sure whether to use a public array or a mapped byte array
-    donor[] public donors;
-    CharityEvent[] public CharityEvents;
-    //need help deciding on above or below use
-    mapping(bytes32 => mapping(uint => CharityEvent[])) public charityBook;
-    mapping(bytes32 => mapping(uint => donor[])) public donorBook;
     
-    function getCharityEvents() external view returns(CharityEvent[] memory) {
-        return CharityEvents;
+    //need help deciding on above or below use
+    mapping(uint => charityEventID)) public charityBook;
+    mapping(uint => recipientID)) public donorBook;
+    
+    function registerCharityEvent(
+        address payable _charityEventAddress,
+        uint _startDate,
+        uint _endDate,
+        string memory _URI,
+        ) public 
+    {
+        
+        charityBook[] = CharityEvent(_charityEventAddress, _startDate, _endDate, false, _URI);
+    }
+    
+    event charityEventRegistration(
+        uint charityEventID,
+        string URI
+    );    
+    
+    
+    
+    function getCharityEvents(uint charityEventID) external view returns(bytes32) {
+        return charityBook;
+    }
+    
+    function getDonors(uint charityEventID) external view returns(bytes32) {
+        return charityBook;
+    }
+    
+    event donation (
+        string donorName,
+        uint amount,
+        address payable charityEventID
+    );
+    
+    
+    function updateCharityEventApproval(
+        //check if admin
+        uint charityEventID,
+        bool _isApproved) 
+        public
+    {
+        
+    }
+    
+    function donate(
+        uint charityEventID,
+        string memory donorName) 
+        public 
+    {
+        
+    }    
+    
+    function getCharityEvent(
+        uint charityEventID) 
+        public view
+    {
+        
+    } 
+    
+    modifier setApproval() {
+        bool allowed = false;
+        require(allowed == true, 'only approver allowed');
+        _;
+    }    
+    
+    
+};
     }
     
     function getDonors() external view returns(donor[] memory) {
