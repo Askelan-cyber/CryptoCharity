@@ -9,7 +9,6 @@ contract CharityMaker {
     using SafeMath for uint;
     
     mapping(address => bool) public admins;
-    //admins[msg.sender] = true;
     
     Counters.Counter private CharityEventIDs;
     
@@ -22,6 +21,10 @@ contract CharityMaker {
     }
 
     mapping(uint => CharityEvent) public charityBook;
+        
+    constructor() public {
+        admins[msg.sender] = true;
+    }
     
     event charityEventRegistration(
         uint _charityEventIDharityEventID,
