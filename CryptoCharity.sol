@@ -57,6 +57,12 @@ contract CharityMaker {
         require(admins[msg.sender], "You do not have permission to approve charity events.");
         charityBook[_charityEventID].isApproved = _isApproved;
     }
+
+    function getCharityEventInfo(uint _cID) view public returns(uint, address, uint, uint, bool, string memory) {
+        return (_cID, charityBook[_cID].charityEventAddress, charityBook[_cID].startDate, charityBook[_cID].endDate, charityBook[_cID].isApproved, charityBook[_cID].URI);
+
+    }
+
     
     function updateAdmins(
         address admin, bool isAdmin) public {

@@ -75,6 +75,10 @@ def pinJSONtoIPFS(json):
     # return f"ipfs://{ipfs_hash}"
     return ipfs_hash
 
+def getJSONfromPinata(ipfs_hash):
+    response = requests.get(f"https://gateway.pinata.cloud/ipfs/{ipfs_hash}")
+    return json.loads(response.text)
+
 # converts AttributeDict (including nested) to dict: reference and credit: vindard (https://github.com/vindard) https://github.com/ethereum/web3.py/issues/782
 def toDict(dictToParse):
     # convert any 'AttributeDict' type found to 'dict'
