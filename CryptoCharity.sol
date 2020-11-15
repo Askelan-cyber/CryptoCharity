@@ -1,11 +1,12 @@
 pragma solidity 0.6.3;
 
 import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol';
-import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v2.5.0/contracts/drafts/Counters.sol';
+import 'https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Counters.sol';
 
 contract CharityMaker {
     
     using Counters for Counters.Counter;
+    using SafeMath for uint;
     
     mapping(address => bool) public admins;
     //admins[msg.sender] = true;
@@ -19,13 +20,13 @@ contract CharityMaker {
         bool isApproved;
         string URI;
     }
-    
-    mapping(uint => charityEventID) public charityBook;
+
+    mapping(uint => CharityEvent) public charityBook;
     
     event charityEventRegistration(
-        uint charityEventID,
-        uint startDate,
-        uint endDate        
+        uint _charityEventIDharityEventID,
+        uint _startDate,
+        uint _endDate        
     );    
     
     function registerCharityEvent(
@@ -35,14 +36,12 @@ contract CharityMaker {
         string memory _URI
         ) public returns (uint)
     {
-        uint startD = charityBook[CharityEventID].startDate;
-        uint endD = charityBook[CharityEventID].endDate;        
-        require(now >= startD  && now <= endD, "Start date must be after current date.");
+        require(now >= _startDate  && now <= _endDate, "Start date must be after current date.");
         CharityEventIDs.increment();
-        uint CharityEventID = CharityEventIDs.current();
-        charityBook[CharityEventID] = CharityEvent(_charityEventAddress, _startDate, _endDate, false, _URI);
-        emit charityEventRegistration(CharityEventID, _startDate, _endDate);
-        return CharityEventID;
+        uint cID = CharityEventIDs.current();
+        charityBook[cID] = CharityEvent(_charityEventAddress, _startDate, _endDate, false, _URI);
+        emit charityEventRegistration(cID, _startDate, _endDate);
+        return cID;
     }
     
     function updateCharityEventApproval(
@@ -75,11 +74,11 @@ contract CharityMaker {
         ) 
         public payable
     {
-        uint startD = charityBook[CharityEventID].startDate;
-        uint endD = charityBook[CharityEventID].endDate;
+        uint startD = charityBook[_charityEventID].startDate;
+        uint endD = charityBook[_charityEventID].endDate;
         require(now >= startD  && now <= endD, "Donation must be made within the start and end date parameters.");        
-        require(charityBook[CharityEventID].isApproved == true, "This charity is currently unable to recieve funds.");
-        address payable charityAddress = charityBook[CharityEventID].charityEventAddress;
+        require(charityBook[_charityEventID].isApproved == true, "This charity is currently unable to recieve funds.");
+        address payable charityAddress = charityBook[_charityEventID].charityEventAddress;
         charityAddress.transfer(msg.value);
         emit Donate(_donorName, msg.value, _charityEventID);
     }      
