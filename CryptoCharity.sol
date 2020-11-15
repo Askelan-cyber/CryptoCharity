@@ -27,9 +27,10 @@ contract CharityMaker {
     }
     
     event charityEventRegistration(
-        uint _charityEventIDharityEventID,
+        uint _charityEventID,
         uint _startDate,
-        uint _endDate        
+        uint _endDate,
+        string _URI
     );    
     
     function registerCharityEvent(
@@ -43,7 +44,7 @@ contract CharityMaker {
         CharityEventIDs.increment();
         uint cID = CharityEventIDs.current();
         charityBook[cID] = CharityEvent(_charityEventAddress, _startDate, _endDate, false, _URI);
-        emit charityEventRegistration(cID, _startDate, _endDate);
+        emit charityEventRegistration(cID, _startDate, _endDate, _URI);
         return cID;
     }
     

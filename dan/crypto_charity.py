@@ -94,16 +94,16 @@ def get_charityEventID_from_URI(event_URI: str):
     return charity_event_registrations_dict['args']['TestEventID'])
 
 
-def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date)
+def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date):
 
     # convert string start and end dates to datetime (if they aren't already datetime objects)
     if not isinstance(start_date, dt):
-        start_date = dt.strptime(start_date, "%Y/%m/%d")
+        start_date = dt.strptime(start_date, "%Y/%m/%d")  # 2020/01/26
     if not isinstance(end_date, dt):
         end_date = dt.strptime(end_date, "%Y/%m/%d")
 
     # check if start_date is in the past and if so make the start_date today instead
-    today = dt.strptime(dt.now(), "%Y/%m/%d") # 2020/01/26
+    today = dt.now()
     if start_date < today:
         start_date = today
     
@@ -112,14 +112,14 @@ def register_charity_event(event_name: str, event_recipient: str, funding_goal: 
         return error(f"Error: End Date {end_date} is before Start Date {start_date}")
 
     # convert start and end datetimes to to unix timestamps
-    start_date = start_date.timestamp()
-    end_date = end_date.timestamp()
+    start_date = int(start_date.timestamp())
+    end_date = int(end_date.timestamp())
 
     # create charity_info dict
     charity_info = {
-        charityEventName: event_name,
+        "charityEventName": event_name,
         # charityEventRecipient: event_recipient,
-        goalAmount: funding_goal
+        "goalAmount": funding_goal
     }
 
     # convert charity_info to json_charity_info (json format) and pin to IPFS via pinata api function
@@ -135,7 +135,7 @@ def register_charity_event(event_name: str, event_recipient: str, funding_goal: 
 
     return charity_event_id
 
-def update_charity_event_approval(charity_event_id: uint, is_approved: bool)
+def update_charity_event_approval(charity_event_id: uint, is_approved: bool):
     # call contract funtion to update approval
     tx_hash = charity_contract.functions.updateCharityEventApproval(charity_event_id, is_approved)\
         .transact({"from": w3.eth.accounts[0]})
@@ -165,13 +165,21 @@ def update_charity_event_approval(charity_event_id: uint, is_approved: bool)
 #     return result.hex()
 
 # THIS IS INCOMPLETE AND NOT YET FUNCTIONAL   
-def donate(charity_event_id: uint, amount: iint, donor_private_key, donor_name)
+def donate(charity_event_id: uint, amount: int, donor_wallet, donor_private_key, donor_name)
 
 
     # tx_hash = charity_contract.functions.donate(charity_event_id, donor_name)\
     #     .transact({"from": w3.eth.accounts[0]})
 
     # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+
+    ### Reference: https://web3py.readthedocs.io/en/stable/examples.html#using-infura-rinkeby-node
+    transaction = charity_contract.functions.donate(charity_event_id, donor_name).buildTransaction()
+    transaction.update({ 'gas' : appropriate_gas_amount })
+    transaction.update({ 'nonce' : w3.eth.getTransactionCount(donor_wallet) })
+    signed_tx = w3.eth.account.signTransaction(transaction, donor_private_key)
+
+
     return receipt
 
 # code snippets:

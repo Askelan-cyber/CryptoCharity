@@ -35,7 +35,7 @@
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "_charityEventIDharityEventID",
+				"name": "_charityEventID",
 				"type": "uint256"
 			},
 			{
@@ -49,6 +49,12 @@
 				"internalType": "uint256",
 				"name": "_endDate",
 				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "_URI",
+				"type": "string"
 			}
 		],
 		"name": "charityEventRegistration",
