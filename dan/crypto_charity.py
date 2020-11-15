@@ -72,7 +72,8 @@ def pinJSONtoIPFS(json):
         "https://api.pinata.cloud/pinning/pinJSONToIPFS", data=json, headers=headers
     )
     ipfs_hash = req.json()["IpfsHash"]
-    return f"ipfs://{ipfs_hash}"
+    # return f"ipfs://{ipfs_hash}"
+    return ipfs_hash
 
 # converts AttributeDict (including nested) to dict: reference and credit: vindard (https://github.com/vindard) https://github.com/ethereum/web3.py/issues/782
 def toDict(dictToParse):
@@ -91,8 +92,7 @@ def get_charityEventID_from_URI(event_URI: str):
     charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"URI": event_URI})
     charity_event_registrations = charity_event_reg_filter.get_all_entries()
     charity_event_registrations_dict = toDict(charity_event_registrations[0])
-    return charity_event_registrations_dict['args']['TestEventID'])
-
+    return charity_event_registrations_dict['args']['charityEventID'])
 
 def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date):
 
@@ -142,6 +142,28 @@ def update_charity_event_approval(charity_event_id: uint, is_approved: bool):
 
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     return receipt
+
+def get_charity_event(charity_event_id):
+    charity_event_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"charityEventID": charity_event_id})
+    charity_events = charity_event_filter.get_all_entries()
+    charity_event_dict = toDict(charity_events[0])
+
+    charity_event_info = {
+        "charityEventID": charity_event_id,
+        "charityEventAddress": 
+        "startDate":
+        "endDate":
+        "isApproved":
+        "URI":
+
+    }
+    # address payable charityEventAddress;
+    # uint startDate;
+    # uint endDate;
+    # bool isApproved;
+    # string URI;
+
+    return charity_event_dict['args']['charityEventID'])
 
 ### May not be needed
 # def create_raw_tx(account, recipient, amount):
