@@ -18,16 +18,29 @@ contract web3TransactTest {
     mapping(uint => testEvent) public testEvents;
 
     event testEventRegistration(
-        uint TestEventID
+        uint TestEventID,
         uint createDate,
         string URI 
     );
+    
+    event testEmit(
+        uint TestEventID,
+        string testText
+    );
+        
 
     function registerTestEvent(uint _createDate, string memory _URI) public returns(uint) {
         testEventIDs.increment();
-        uint _testEventID = testEventIDs.current();
+        uint testEventID = testEventIDs.current();
+        testEvents[testEventID] = testEvent(_createDate, _URI);
         
-        emit testEventRegistration(_testEventID, _createDate, _URI)
+        emit testEventRegistration(testEventID, _createDate, _URI);
+    }
+
+    function testEmitEvent(string memory _testText) public {
+        testEventIDs.increment();
+        uint _testEventID = testEventIDs.current();
+        emit testEmit(_testEventID, _testText);
     }
 
 }
