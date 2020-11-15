@@ -27,10 +27,10 @@ contract CharityMaker {
     }
     
     event charityEventRegistration(
-        uint _charityEventID,
-        uint _startDate,
-        uint _endDate,
-        string _URI
+        uint charityEventID,
+        uint startDate,
+        uint endDate,
+        string URI
     );    
     
     function registerCharityEvent(
