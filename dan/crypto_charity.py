@@ -147,27 +147,42 @@ def update_charity_event_approval(charity_event_id: uint, is_approved: bool):
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     return receipt
 
+def get_total_donations(charity_event_id):
+    donations = charity_contract.events.Donate.createFilter(fromBlock="0x0", argument_filters={"charityEventID": charity_event_id})
+    donations_filter = donations.get_all_entries()
+
+    # loop through solidity returned list of objects and convert to list of dicts
+    donations_list = []
+    for donation in donations_filter:
+        donations_list.append(toDict(donation))
+
+    # loop through donations_list and add up donorAmount from each donation
+    total_donations = 0
+    for donation in donations_list:
+        total_donations += donation['args']['donorAmount']
+        
+    return total_donations
+
 def get_charity_event(charity_event_id):
-    charity_event_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"charityEventID": charity_event_id})
-    charity_events = charity_event_filter.get_all_entries()
-    charity_event_dict = toDict(charity_events[0])
+    solidity_info = charity_contract.functions.getCharityEventInfo(charity_event_id).call()
 
+    ipfs_hash = solidity_info[5]
+    charity_ipfs_data = getJSONfromPinata(ipfs_hash)
+    
     charity_event_info = {
+        "charityEventName": charity_ipfs_data['charityEventName'],
         "charityEventID": charity_event_id,
-        "charityEventAddress": 
-        "startDate":
-        "endDate":
-        "isApproved":
-        "URI":
-
+        "charityEventAddress": solidity_info[1],
+        "startDate": dt.utcfromtimestamp(solidity_info[2]).strftime('%Y/%m/%d'),
+        "endDate": dt.utcfromtimestamp(solidity_info[3]).strftime('%Y/%m/%d'),
+        "goalAmount": charity_ipfs_data['goalAmount'],
+        "totalDonations": get_total_donations(charity_event_id),
+        "isApproved": solidity_info[4],
+        "ipfsHash": solidity_info[5],
+        "ipfsLink": f"https://gateway.pinata.cloud/ipfs/{ipfs_hash}"
     }
-    # address payable charityEventAddress;
-    # uint startDate;
-    # uint endDate;
-    # bool isApproved;
-    # string URI;
 
-    return charity_event_dict['args']['charityEventID'])
+    return charity_event_info
 
 ### May not be needed
 # def create_raw_tx(account, recipient, amount):
