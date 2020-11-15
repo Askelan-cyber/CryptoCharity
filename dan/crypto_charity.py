@@ -1,12 +1,14 @@
-# from logging import error
+from logging import error
 from web3.auto import w3
 import json
 import requests
 import os
-# from dotenv import load_dotenv
 from datetime import datetime as dt
+from hexbytes import HexBytes
 
-## Moved to front end
+## Moved to front end / may not be needed
+# from dotenv import load_dotenv
+
 # # for ETH transactions
 # from eth_account import Account
 
@@ -14,6 +16,7 @@ from datetime import datetime as dt
 # from getpass import getpass
 
 # load_dotenv()
+
 
 """
 Planned Functions:
@@ -71,21 +74,43 @@ def pinJSONtoIPFS(json):
     ipfs_hash = req.json()["IpfsHash"]
     return f"ipfs://{ipfs_hash}"
 
-## No longer needed
-# def get_charityEventID_from_URI(event_URI: str):
-    
-#     charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"URI": event_URI})
-#     charity_event_registrations = charity_event_reg_filter.get_all_entries()
-#     return charity_event_registrations[-1].charityEventID
+# converts AttributeDict (including nested) to dict: reference and credit: vindard (https://github.com/vindard) https://github.com/ethereum/web3.py/issues/782
+def toDict(dictToParse):
+    # convert any 'AttributeDict' type found to 'dict'
+    parsedDict = dict(dictToParse)
+    for key, val in parsedDict.items():
+        # check for nested dict structures to iterate through
+        if  'dict' in str(type(val)).lower():
+            parsedDict[key] = toDict(val)
+        # convert 'HexBytes' type to 'str'
+        elif 'HexBytes' in str(type(val)):
+            parsedDict[key] = val.hex()
+    return parsedDict
 
-# THIS IS INCOMPLETE AND NOT YET FUNCTIONAL
+def get_charityEventID_from_URI(event_URI: str):
+    charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"URI": event_URI})
+    charity_event_registrations = charity_event_reg_filter.get_all_entries()
+    charity_event_registrations_dict = toDict(charity_event_registrations[0])
+    return charity_event_registrations_dict['args']['TestEventID'])
+
+
+# Unresolved issue with obtaining/returning charity event id from charity event registration in solidity contract
 def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date)
 
     # convert string start and end dates to datetime (if they aren't already datetime objects)
     if not isinstance(start_date, dt):
-        start_date = dt.strptime(start_date, "%Y/%m/%d") # 2020/01/26
+        start_date = dt.strptime(start_date, "%Y/%m/%d")
     if not isinstance(end_date, dt):
         end_date = dt.strptime(end_date, "%Y/%m/%d")
+
+    # check if start_date is in the past and if so make the start_date today instead
+    today = dt.strptime(dt.now(), "%Y/%m/%d") # 2020/01/26
+    if start_date < today:
+        start_date = today
+    
+    # check if end date is after start_date and return error if not
+    if start_date > end_date:
+        return error(f"Error: End Date {end_date} is before Start Date {start_date}")
 
     # convert start and end datetimes to to unix timestamps
     start_date = start_date.timestamp()
@@ -103,14 +128,10 @@ def register_charity_event(event_name: str, event_recipient: str, funding_goal: 
     ipfs_link = pinJSONtoIPFS(json_charity_info)
 
     # create charity event in the block chain
-    # registryCharityEvent(payable address recipient, uint startDate, uint endDatestr memory eventURI) public 
-    tx_hash = charity_contract.functions.registryCharityEvent(event_recipient, start_date, end_date, ipfs_link).transact({"from": w3.eth.accounts[0]})
+    tx_hash = charity_contract.functions.registerCharityEvent(event_recipient, start_date, end_date, ipfs_link).transact({"from": w3.eth.accounts[0]})
     receipt  = w3.eth.waitForTransactionReceipt(tx_hash)
     
-    # obtain charity_event_id from block chain event
-        # ??how do we return the charity event id from the solidity contract when we've used web3 .transact to call the function that would logically return the charity event id?? 
-        # We know the solidity registerCharityEvent will also emit an event on the block chain--perhaps we retrieve the charity event id from that, but how do we isolate the correct
-        # event without already knowing the charity id?  Does it make sense to try to use the URI to do an event lookup to then return the charity event id?
+    # lookup registerCharityEvent events, filtering by the newly created ipfs_link (URI) to cross reference and return the newly generated charity event id
     charity_event_id = get_charityEventID_from_URI(ipfs_link)
 
     return charity_event_id
@@ -123,27 +144,26 @@ def update_charity_event_approval(charity_event_id: uint, is_approved: bool)
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     return receipt
 
+### May not be needed
+# def create_raw_tx(account, recipient, amount):
+#     gasEstimate = w3.eth.estimateGas(
+#         {"from": account.address, "to": recipient, "value": amount}
+#     )
+#     return {
+#         "from": account.address,
+#         "to": recipient,
+#         "value": amount,
+#         "gasPrice": w3.eth.gasPrice,
+#         "gas": gasEstimate,
+#         "nonce": w3.eth.getTransactionCount(account.address),
+#     }
 
-def create_raw_tx(account, recipient, amount):
-    gasEstimate = w3.eth.estimateGas(
-        {"from": account.address, "to": recipient, "value": amount}
-    )
-    return {
-        "from": account.address,
-        "to": recipient,
-        "value": amount,
-        "gasPrice": w3.eth.gasPrice,
-        "gas": gasEstimate,
-        "nonce": w3.eth.getTransactionCount(account.address),
-    }
-
-
-def send_tx(account, recipient, amount):
-    tx = create_raw_tx(account, recipient, amount)
-    signed_tx = account.sign_transaction(tx)
-    result = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
-    print(result.hex())
-    return result.hex()
+# def send_tx(account, recipient, amount):
+#     tx = create_raw_tx(account, recipient, amount)
+#     signed_tx = account.sign_transaction(tx)
+#     result = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
+#     print(result.hex())
+#     return result.hex()
 
 # THIS IS INCOMPLETE AND NOT YET FUNCTIONAL   
 def donate(charity_event_id: uint, amount: iint, donor_private, donor_name="Anonymous")
