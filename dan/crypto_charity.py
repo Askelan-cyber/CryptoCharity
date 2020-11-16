@@ -22,7 +22,7 @@ from hexbytes import HexBytes
 Planned Functions:
     X- register_charity_event(charity_event_name: str, recipient: str, goal_amt: int, start_date: str, end_date: str)
     X- update_charity_event_approval(charity_event_id: uint, is_approved: bool)
-    donate(charity_event_id: uint, amount: int, donor_name=None)
+    X- donate(charity_event_id: uint, amount: int, donor_name=None)
         Note: will need to accept “hidden” private key to submit payment
     X- get_charity_event(charity_event_id)
     view_active_charity_events()
