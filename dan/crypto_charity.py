@@ -211,21 +211,9 @@ def get_charity_event(charity_event_id):
 #     return result.hex()
 
 # THIS IS INCOMPLETE AND NOT YET FUNCTIONAL   
-def donate(charity_event_id: uint, amount: int, donor_wallet, donor_private_key, donor_name)
-
-
-    # tx_hash = charity_contract.functions.donate(charity_event_id, donor_name)\
-    #     .transact({"from": w3.eth.accounts[0]})
-
-    # receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-
-    ### Reference: https://web3py.readthedocs.io/en/stable/examples.html#using-infura-rinkeby-node
-    transaction = charity_contract.functions.donate(charity_event_id, donor_name).buildTransaction()
-    transaction.update({ 'gas' : appropriate_gas_amount })
-    transaction.update({ 'nonce' : w3.eth.getTransactionCount(donor_wallet) })
-    signed_tx = w3.eth.account.signTransaction(transaction, donor_private_key)
-
-
+def donate(charity_event_id: int, amount: int, donor_name='Anonymous'):
+    donate_tx_hash = charity_contract.functions.donate(charity_event_id, donor_name).transact({"value": amount, "from": w3.eth.accounts[0]})
+    receipt = w3.eth.waitForTransactionReceipt(donate_tx_hash)
     return receipt
 
 # code snippets:
