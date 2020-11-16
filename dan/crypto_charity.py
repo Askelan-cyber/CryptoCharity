@@ -189,7 +189,3 @@ def get_charity_event(charity_event_id):
 
     return charity_event_info
 
-def donate(charity_event_id: int, amount: int, donor_name='Anonymous'):
-    donate_tx_hash = charity_contract.functions.donate(charity_event_id, donor_name).transact({"value": amount, "from": w3.eth.accounts[0]})
-    receipt = w3.eth.waitForTransactionReceipt(donate_tx_hash)
-    return receipt
