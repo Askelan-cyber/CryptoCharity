@@ -20,15 +20,15 @@ from hexbytes import HexBytes
 
 """
 Planned Functions:
-    register_charity_event(charity_event_name: str, recipient: str, goal_amt: int, start_date: str, end_date: str)
-    update_charity_event_approval(charity_event_id: uint, is_approved: bool)
+    X- register_charity_event(charity_event_name: str, recipient: str, goal_amt: int, start_date: str, end_date: str)
+    X- update_charity_event_approval(charity_event_id: uint, is_approved: bool)
     donate(charity_event_id: uint, amount: int, donor_name=None)
-    Note: will need to accept “hidden” private key to submit payment
-    get_charity_event(charity_event_id)
+        Note: will need to accept “hidden” private key to submit payment
+    X- get_charity_event(charity_event_id)
     view_active_charity_events()
-    Note: return loop of get_charity_event
+        Note: return loop of get_charity_event
     view_charity_event_history()
-    Note: return loop of get_charity_event
+        Note: return loop of get_charity_event
     View_donations(event_id=0, donor_id=0)
 
 Planned User interface actions:
@@ -145,6 +145,11 @@ def update_charity_event_approval(charity_event_id: uint, is_approved: bool):
         .transact({"from": w3.eth.accounts[0]})
 
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    return receipt
+
+def donate(charity_event_id: int, amount: int, donor_name='Anonymous'):
+    donate_tx_hash = charity_contract.functions.donate(charity_event_id, donor_name).transact({"value": amount, "from": w3.eth.accounts[0]})
+    receipt = w3.eth.waitForTransactionReceipt(donate_tx_hash)
     return receipt
 
 def get_total_donations(charity_event_id):
