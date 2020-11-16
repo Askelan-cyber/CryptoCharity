@@ -189,41 +189,7 @@ def get_charity_event(charity_event_id):
 
     return charity_event_info
 
-### May not be needed
-# def create_raw_tx(account, recipient, amount):
-#     gasEstimate = w3.eth.estimateGas(
-#         {"from": account.address, "to": recipient, "value": amount}
-#     )
-#     return {
-#         "from": account.address,
-#         "to": recipient,
-#         "value": amount,
-#         "gasPrice": w3.eth.gasPrice,
-#         "gas": gasEstimate,
-#         "nonce": w3.eth.getTransactionCount(account.address),
-#     }
-
-# def send_tx(account, recipient, amount):
-#     tx = create_raw_tx(account, recipient, amount)
-#     signed_tx = account.sign_transaction(tx)
-#     result = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
-#     print(result.hex())
-#     return result.hex()
-
-# THIS IS INCOMPLETE AND NOT YET FUNCTIONAL   
 def donate(charity_event_id: int, amount: int, donor_name='Anonymous'):
     donate_tx_hash = charity_contract.functions.donate(charity_event_id, donor_name).transact({"value": amount, "from": w3.eth.accounts[0]})
     receipt = w3.eth.waitForTransactionReceipt(donate_tx_hash)
     return receipt
-
-# code snippets:
-# updateCharityEventApproval
-# contract.functions.test(52).call()
-
-
-
-
-# user input : register 
-# event_id
-# 1. register
-# 2. view past events
