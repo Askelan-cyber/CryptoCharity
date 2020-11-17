@@ -6,16 +6,15 @@ import os
 from datetime import datetime as dt
 from hexbytes import HexBytes
 
-## Moved to front end / may not be needed
-# from dotenv import load_dotenv
-
 # # for ETH transactions
 # from eth_account import Account
 
 # # for obscuring STDIN input
 # from getpass import getpass
 
-# load_dotenv()
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 """
@@ -45,14 +44,14 @@ Planned User interface actions:
     Cancel event > call update_charity_event_approval (example)
 
 """
-## Moved to front end
-# def init_contract(abi_path:str, contract_address:str):
-#     """ Initialize a contract given the abi and address """
-#     with open(abi_path) as json_file:
-#         abi = json.load(json_file)
-#     return w3.eth.contract(address=contract_address, abi=abi)
+# Moved to front end
+def init_contract(abi_path:str, contract_address:str):
+    """ Initialize a contract given the abi and address """
+    with open(abi_path) as json_file:
+        abi = json.load(json_file)
+    return w3.eth.contract(address=contract_address, abi=abi)
 
-# charity_contract = init_contract("CharityMakerABI.json", os.getenv("CHARITY_MAKER_ADDRESS"))
+charity_contract = init_contract("CharityMakerABI.json", os.getenv("CHARITY_MAKER_ADDRESS"))
 
 headers = {
     "Content-Type": "application/json",
