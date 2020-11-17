@@ -40,7 +40,7 @@ contract CharityMaker {
         string memory _URI
         ) public returns (uint)
     {
-        require(now >= _startDate  && now <= _endDate, "Start date must be after current date.");
+        require(now <= _startDate, "Start date must be after current date.");
         CharityEventIDs.increment();
         uint cID = CharityEventIDs.current();
         charityBook[cID] = CharityEvent(_charityEventAddress, _startDate, _endDate, false, _URI);
@@ -86,7 +86,7 @@ contract CharityMaker {
     {
         uint startD = charityBook[_charityEventID].startDate;
         uint endD = charityBook[_charityEventID].endDate;
-        require(now >= startD  && now <= endD, "Donation must be made within the start and end date parameters.");        
+        require(now + 86400 >= startD  && now <= endD, "Donation must be made within the start and end date parameters.");        
         require(charityBook[_charityEventID].isApproved == true, "This charity is currently unable to recieve funds.");
         address payable charityAddress = charityBook[_charityEventID].charityEventAddress;
         charityAddress.transfer(msg.value);

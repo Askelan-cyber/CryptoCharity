@@ -72,8 +72,8 @@ def pinJSONtoIPFS(json):
         "https://api.pinata.cloud/pinning/pinJSONToIPFS", data=json, headers=headers
     )
     ipfs_hash = req.json()["IpfsHash"]
-    # return f"ipfs://{ipfs_hash}"
     return ipfs_hash
+
 
 def getJSONfromPinata(ipfs_hash):
     response = requests.get(f"https://gateway.pinata.cloud/ipfs/{ipfs_hash}")
@@ -96,7 +96,7 @@ def get_charityEventID_from_URI(event_URI: str):
     charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"URI": event_URI})
     charity_event_registrations = charity_event_reg_filter.get_all_entries()
     charity_event_registrations_dict = toDict(charity_event_registrations[0])
-    return charity_event_registrations_dict['args']['charityEventID'])
+    return charity_event_registrations_dict['args']['charityEventID']
 
 def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date):
 
@@ -139,7 +139,7 @@ def register_charity_event(event_name: str, event_recipient: str, funding_goal: 
 
     return charity_event_id
 
-def update_charity_event_approval(charity_event_id: uint, is_approved: bool):
+def update_charity_event_approval(charity_event_id: int, is_approved: bool):
     # call contract funtion to update approval
     tx_hash = charity_contract.functions.updateCharityEventApproval(charity_event_id, is_approved)\
         .transact({"from": w3.eth.accounts[0]})
