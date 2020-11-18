@@ -27,7 +27,7 @@ def init_contract(abi_path: str, contract_address: str):
     return w3.eth.contract(address=contract_address, abi=abi)
 
 
-charity_contract = init_contract("CharityMakerABI.json", os.getenv("CharityMaker_CONTRACT_ADDRESS"))
+charity_contract = init_contract("CharityMakerABI.json", os.getenv("CHARITY_MAKER_ADDRESS"))
 
 
 def register_charity_event():
@@ -36,21 +36,23 @@ def register_charity_event():
     event_name = input("Name of Charity Event: ")
     event_recipient = input("Name(s) of recipient(s): ")
     funding_goal = input("Goal amount for this event: ")
-    start_date = input("Start date for this event: ")
-    end_date = input("End date for this event: ")
+    start_date = input("Start date for this event(YYYY/MM/DD): ")
+    end_date = input("End date for this event(YYYY/MM/DD): ")
 
     return crypto_charity.py.register_charity_event(event_name, event_recipient, funding_goal, start_date, end_date)
 
 
 def update_charity_event_approval():
-    # user sees charity name: eventid
-    # charity_event_id: uint, is_approved: bool
-    # verification
+    # verification needs to be more sophisticated
 
     charity_event_id = input("What is the charity id?")
+    verification = input("Does the event meet all the necessary requirements?")
+    if verification == "Yes" or "yes" or "y" or "Y":
+        is_approved = True
+    elif verification == "No" or "no" or "N" or "n":
+        is_approved = False
 
-    return crypto_charity.py.update_charity_event_approval(charity_event_id, approval
-    status)
+    return crypto_charity.py.update_charity_event_approval(charity_event_id, is_approved)
 
 def donate(donor_private_key):
     # input donator name set to anon if none given
@@ -59,35 +61,24 @@ def donate(donor_private_key):
     event_id = input("Please enter charity event id:")
     amount = input("Donation amount:")
     donor_name = input("Enter your name (Optional):")
-    if donor_name = " ":
-        return donor_name = "anonymous"
+    if donor_name == " ":
+        return donor_name == "anonymous"
 
     return crypto_charity.py.donate(event_id, amount, donor_privatekey, donor_name)
 
 # Is this going to be front end or mid level?
 
 def view_all_donations():
-    donation_by_eventid = ("Please enter event id:")
-    donations = charity_contract.events.Donate.createFilter(fromBlock="0x0",
-                                                            #argument_filters={"charityEventID": charity_event_id})
-    donations_filter = donations.get_all_entries()
-
-     # loop through solidity returned list of objects and convert to list of dicts
-
-    donations_list = []
-    for donation in donations_filter:
-        donations_list.append(toDict(donation))
-
-    # loop through donations_list and add up donorAmount from each donation
-    total_donations = 0
-    for donation in donations_list:
-        total_donations += donation['args']['donorAmount']
-
-    return total_donations
+    charity_event_id = ("Please enter event id:")
+    view_options = "Would you like to view all donations for this event or just the top donations?"
+    if view_options == "view all":
+        return crypto_charity.py.get_total_donations(charity_event_id)
+    
+    elif view_options == "view top":
 
     # Is the private_key going to be the filter?
 
-def view_own_donations():
+def view_own_donations(donor_private_key):
     personal_donations = charity_contract.events.Donate.createFilter(fromBlock="0x0",
                                                                 #argument_filters={"charityEventID": charity_event_id})
     personal_donations_filter = personal_donations.get_all_entries()
@@ -108,16 +99,10 @@ def view_own_donations():
 
     def view_list_charity_events():
 
-    # view their event id here for reference
 
-    # charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"URI": event_URI})
-    # charity_event_registrations = charity_event_reg_filter.get_all_entries()
-
-    # return charity_event_registrations[-1].charityEventID
 def view_charity_event_info(event_id):
 
-    # event_info = file.get_charity_event_info(event_id)
-    # print(event_info)
+    return crypto_charity.py.get_charity_event(charity_event_id)
 
 donor_wallet = input("Please enter your wallet address:")
 donor_private_key = input("Please enter your private key:")
@@ -132,13 +117,11 @@ donor_private_key = input("Please enter your private key:")
     # prompts for verification
 
     elif option_menu == "Update Approval Status":
-        # Does the user know their event_id?
-        # event_approval = input("What charity event?")
+       
         update_charity_event_approval(event_id)
 
     elif option_menu == "Donate":
-
-        donate():
+        donate()
 
     elif option_menu == "View Donations":
         view_donations()
