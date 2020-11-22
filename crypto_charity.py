@@ -169,7 +169,7 @@ def get_total_donations(charity_event_id):
     for donation in donations_list:
         total_donations += donation['args']['donorAmount']
         
-    return math.trunc(total_donations)
+    return wei_to_eth(total_donations))
 
 def get_charity_event(charity_event_id):
     solidity_info = charity_contract.functions.getCharityEventInfo(charity_event_id).call()
@@ -183,8 +183,8 @@ def get_charity_event(charity_event_id):
         "charityEventAddress": solidity_info[1],
         "startDate": dt.utcfromtimestamp(solidity_info[2]).strftime('%Y/%m/%d'),
         "endDate": dt.utcfromtimestamp(solidity_info[3]).strftime('%Y/%m/%d'),
-        "goalAmount": charity_ipfs_data['goalAmount'],
-        "totalDonations": get_total_donations(charity_event_id),
+        "goalAmount": wei_to_eth(charity_ipfs_data['goalAmount']),
+        "totalDonations": wei_to_eth(get_total_donations(charity_event_id)),
         "isApproved": solidity_info[4],
         "ipfsHash": solidity_info[5],
         "ipfsLink": f"https://gateway.pinata.cloud/ipfs/{ipfs_hash}"
