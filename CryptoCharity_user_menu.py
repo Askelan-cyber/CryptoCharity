@@ -196,7 +196,7 @@ while a != len(main_menu):
                 view_all_charity_events()
                 input("\nPress Enter to Continue")
 
-            if charity_admin_menu_options == 2:
+            elif charity_admin_menu_options == 2:
                 register_charity_event()
                 input("\nPress Enter to Continue")
 
