@@ -99,7 +99,7 @@ def get_charityEventID_from_URI(event_URI: str):
     return charity_event_registrations_dict['args']['charityEventID']
 
 def register_charity_event(event_name: str, event_recipient: str, funding_goal:float, start_date, end_date):
-f# def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date):
+# def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date):
 
     # convert string start and end dates to datetime (if they aren't already datetime objects)
     if not isinstance(start_date, dt):
