@@ -123,56 +123,63 @@ a = 0
 while a != len(main_menu):
     a,text = show_menu(main_menu, "Main Menu") 
     if a == 1:
-        donor_menu_options, donor_opt =  show_menu(donor_menu, "Donor Menu")
-        if donor_menu_options == 1:
-            view_charity_event_info()
-            input("\nPress Enter to Continue")
+        donor_menu_options = 0
+        while donor_menu_options != len(donor_menu):
+            donor_menu_options, donor_opt =  show_menu(donor_menu, "Donor Menu")
+            if donor_menu_options == 1:
+                view_charity_event_info()
+                input("\nPress Enter to Continue")
 
-        elif donor_menu_options == 2:
-            donate()
-            input("\nPress Enter to Continue")
+            elif donor_menu_options == 2:
+                donate()
+                input("\nPress Enter to Continue")
 
-        elif donor_menu_options == 3:
-            view_total_donations()
-            input("\nPress Enter to Continue")
+            elif donor_menu_options == 3:
+                view_total_donations()
+                input("\nPress Enter to Continue")
 
-        elif donor_menu_options == 4:
-            view_itemized_donations()
-            input("\nPress Enter to Continue")
-
+            elif donor_menu_options == 4:
+                view_itemized_donations()
+                input("\nPress Enter to Continue")
+        
     elif a == 2:
-        recipient_menu_options, recipient_opt =  show_menu(recipient_menu, "Recipient Menu")
-        if recipient_menu_options == 1:
-            view_total_donations()
-            input("\nPress Enter to Continue")
+        recipient_menu_options = 0
+        while recipient_menu_options != len(recipient_menu):
+            recipient_menu_options, recipient_opt =  show_menu(recipient_menu, "Recipient Menu")
+            if recipient_menu_options == 1:
+                view_total_donations()
+                input("\nPress Enter to Continue")
 
-        elif recipient_menu_options == 2:
-            view_itemized_donations()
-            input("\nPress Enter to Continue")
+            elif recipient_menu_options == 2:
+                view_itemized_donations()
+                input("\nPress Enter to Continue")
 
-        elif recipient_menu_options == 3:
-            view_charity_event_info()
-            input("\nPress Enter to Continue")
+            elif recipient_menu_options == 3:
+                view_charity_event_info()
+                input("\nPress Enter to Continue")
 
     elif a == 3:
-        charity_admin_menu_options, charity_admin_opt = show_menu(charity_admin_menu, "Charity Administrator Menu")
-        if charity_admin_menu_options == 1:
-            register_charity_event()
-            input("\nPress Enter to Continue")
+        charity_admin_menu_options = 0
+        while charity_admin_menu_options != len(charity_admin_menu):
+            charity_admin_menu_options, charity_admin_opt = show_menu(charity_admin_menu, "Charity Administrator Menu")
+            if charity_admin_menu_options == 1:
+                register_charity_event()
+                input("\nPress Enter to Continue")
 
-        elif charity_admin_menu_options == 2:
-            update_charity_event_approval()
-            input("\nPress Enter to Continue")
+            elif charity_admin_menu_options == 2:
+                update_charity_event_approval()
+                input("\nPress Enter to Continue")
 
-        elif charity_admin_menu_options == 3:
-            add_admin()
-            input("\nPress Enter to Continue")
+            elif charity_admin_menu_options == 3:
+                add_admin()
+                input("\nPress Enter to Continue")
 
-        elif charity_admin_menu_options == 4:
-            view_charity_event_info()
-            input("\nPress Enter to Continue")
+            elif charity_admin_menu_options == 4:
+                view_charity_event_info()
+                input("\nPress Enter to Continue")
 
-        elif charity_admin_menu_options == 5:
-            cancel_charity_event()
-            input("\nPress Enter to Continue")
+            elif charity_admin_menu_options == 5:
+                cancel_charity_event()
+                input("\nPress Enter to Continue")
+
 
