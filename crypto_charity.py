@@ -30,7 +30,6 @@ Planned Functions:
     view_charity_event_history()
         Note: return loop of get_charity_event
     View_donations(event_id=trunc, donor_id=0)
-
 Planned User interface actions:
     Register_charity_event 	
     Update_charity_event_approval
@@ -43,7 +42,6 @@ Planned User interface actions:
     View_charity_event_history
     get_charity_event
     Cancel event > call update_charity_event_approval (example)
-
 """
 # Moved to front end
 def init_contract(abi_path:str, contract_address:str):
@@ -183,7 +181,7 @@ def get_charity_event(charity_event_id):
         "charityEventAddress": solidity_info[1],
         "startDate": dt.utcfromtimestamp(solidity_info[2]).strftime('%Y/%m/%d'),
         "endDate": dt.utcfromtimestamp(solidity_info[3]).strftime('%Y/%m/%d'),
-        "goalAmount": wei_to_eth(charity_ipfs_data['goalAmount']),
+        "goalAmount": wei_to_eth(int(charity_ipfs_data['goalAmount'])),
         "totalDonations": wei_to_eth(get_total_donations(charity_event_id)),
         "isApproved": solidity_info[4],
         "ipfsHash": solidity_info[5],
@@ -194,3 +192,7 @@ def get_charity_event(charity_event_id):
 
 def wei_to_eth(wei):
     return round((wei / 1000000000000000000), 2)
+    
+def update_admins(admin_address, is_admin):
+    admin_info = charity_contract.functions.updateAdmins(admin_address, is_admin).call()
+    return admin_info
