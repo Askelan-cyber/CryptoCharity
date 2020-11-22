@@ -93,7 +93,7 @@ def toDict(dictToParse):
     return parsedDict
 
 def get_charityEventID_from_URI(event_URI: str):
-    charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="0x0", argument_filters={"URI": event_URI})
+    charity_event_reg_filter = charity_contract.events.charityEventRegistration.createFilter(fromBlock="x0", argument_filters={"URI": event_URI})
     charity_event_registrations = charity_event_reg_filter.get_all_entries()
     charity_event_registrations_dict = toDict(charity_event_registrations[0])
     return charity_event_registrations_dict['args']['charityEventID']
@@ -169,7 +169,7 @@ def get_total_donations(charity_event_id):
     for donation in donations_list:
         total_donations += donation['args']['donorAmount']
         
-    return math.trun(total_donations)
+    return math.trunc(total_donations)
 
 def get_charity_event(charity_event_id):
     solidity_info = charity_contract.functions.getCharityEventInfo(charity_event_id).call()
