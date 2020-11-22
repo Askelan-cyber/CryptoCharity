@@ -169,7 +169,7 @@ def get_total_donations(charity_event_id):
     for donation in donations_list:
         total_donations += donation['args']['donorAmount']
         
-    return wei_to_eth(total_donations))
+    return wei_to_eth(total_donations)
 
 def get_charity_event(charity_event_id):
     solidity_info = charity_contract.functions.getCharityEventInfo(charity_event_id).call()
