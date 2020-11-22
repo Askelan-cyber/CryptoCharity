@@ -5,6 +5,7 @@ import requests
 import os
 from datetime import datetime as dt
 from hexbytes import HexBytes
+import math
 
 # # for ETH transactions
 # from eth_account import Account
@@ -28,7 +29,7 @@ Planned Functions:
         Note: return loop of get_charity_event
     view_charity_event_history()
         Note: return loop of get_charity_event
-    View_donations(event_id=0, donor_id=0)
+    View_donations(event_id=trunc, donor_id=0)
 
 Planned User interface actions:
     Register_charity_event 	
@@ -97,7 +98,8 @@ def get_charityEventID_from_URI(event_URI: str):
     charity_event_registrations_dict = toDict(charity_event_registrations[0])
     return charity_event_registrations_dict['args']['charityEventID']
 
-def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date):
+def register_charity_event(event_name: str, event_recipient: str, funding_goal:float, start_date, end_date):
+f# def register_charity_event(event_name: str, event_recipient: str, funding_goal: int, start_date, end_date):
 
     # convert string start and end dates to datetime (if they aren't already datetime objects)
     if not isinstance(start_date, dt):
@@ -146,7 +148,9 @@ def update_charity_event_approval(charity_event_id: int, is_approved: bool):
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     return receipt
 
-def donate(charity_event_id: int, amount: int, donor_name='Anonymous'):
+# def donate(charity_event_id: int, amount: int, donor_name='Anonymous'):
+def donate(charity_event_id: int, amount: float, donor_name='Anonymous'):
+    # change ETH to wei before donation
     donate_tx_hash = charity_contract.functions.donate(charity_event_id, donor_name).transact({"value": amount, "from": w3.eth.accounts[0]})
     receipt = w3.eth.waitForTransactionReceipt(donate_tx_hash)
     return receipt
@@ -161,11 +165,11 @@ def get_total_donations(charity_event_id):
         donations_list.append(toDict(donation))
 
     # loop through donations_list and add up donorAmount from each donation
-    total_donations = 0
+    total_donations = 0.0
     for donation in donations_list:
         total_donations += donation['args']['donorAmount']
         
-    return total_donations
+    return math.trun(total_donations)
 
 def get_charity_event(charity_event_id):
     solidity_info = charity_contract.functions.getCharityEventInfo(charity_event_id).call()
