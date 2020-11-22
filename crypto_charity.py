@@ -151,7 +151,7 @@ def update_charity_event_approval(charity_event_id: int, is_approved: bool):
 def donate(charity_event_id: int, amount, donor_name='Anonymous'):
     # change ETH to wei before donation
     # donate_tx_hash = charity_contract.functions.donate(charity_event_id, donor_name).transact({"value": amount, "from": w3.eth.accounts[0]})
-    donate_tx_hash = charity_contract.functions.donate(charity_event_id, donor_name).transact({"value": web3.toWei(amount,'ether'), "from": w3.eth.accounts[0]})
+    donate_tx_hash = charity_contract.functions.donate(charity_event_id, donor_name).transact({"value": w3.toWei(amount,'ether'), "from": w3.eth.accounts[0]})
     receipt = w3.eth.waitForTransactionReceipt(donate_tx_hash)
     return receipt
 
@@ -192,3 +192,5 @@ def get_charity_event(charity_event_id):
 
     return charity_event_info
 
+def wei_to_eth(wei):
+    return round((wei / 1000000000000000000), 2)
