@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+eth_address = w3.eth.accounts[9]
 
 """
 Planned Functions:
@@ -130,7 +131,7 @@ def register_charity_event(event_name: str, event_recipient: str, funding_goal: 
     ipfs_link = pinJSONtoIPFS(json_charity_info)
 
     # create charity event in the block chain
-    tx_hash = charity_contract.functions.registerCharityEvent(event_recipient, start_date, end_date, ipfs_link).transact({"from": w3.eth.accounts[0]})
+    tx_hash = charity_contract.functions.registerCharityEvent(event_recipient, start_date, end_date, ipfs_link).transact({"from": eth_address})
     receipt  = w3.eth.waitForTransactionReceipt(tx_hash)
     
     # lookup registerCharityEvent events, filtering by the newly created ipfs_link (URI) to cross reference and return the newly generated charity event id
@@ -141,13 +142,13 @@ def register_charity_event(event_name: str, event_recipient: str, funding_goal: 
 def update_charity_event_approval(charity_event_id: int, is_approved: bool):
     # call contract funtion to update approval
     tx_hash = charity_contract.functions.updateCharityEventApproval(charity_event_id, is_approved)\
-        .transact({"from": w3.eth.accounts[0]})
+        .transact({"from": eth_address})
 
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     return receipt
 
 def donate(charity_event_id: int, amount: int, donor_name='Anonymous'):
-    donate_tx_hash = charity_contract.functions.donate(charity_event_id, donor_name).transact({"value": w3.toWei(amount,'ether'), "from": w3.eth.accounts[0]})
+    donate_tx_hash = charity_contract.functions.donate(charity_event_id, donor_name).transact({"value": w3.toWei(amount,'ether'), "from": eth_address})
     receipt = w3.eth.waitForTransactionReceipt(donate_tx_hash)
     return receipt
 
@@ -188,6 +189,6 @@ def get_charity_event(charity_event_id):
 
     return charity_event_info
 
-    def update_admins(admin_address, is_admin):
-        admin_info = charity_contract.functions.updateAdmins(admin_address, is_admin).call()
-        return admin_info
+def update_admins(admin_address, is_admin):
+    admin_info = charity_contract.functions.updateAdmins(admin_address, is_admin).call()
+    return admin_info

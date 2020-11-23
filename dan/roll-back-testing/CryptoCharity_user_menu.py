@@ -7,6 +7,8 @@ from pprint import pprint
 
 load_dotenv()
 
+eth_account = w3.eth.accounts[0]
+
 def init_contract(abi_path: str, contract_address: str):
     """ Initialize a contract given the abi and address """
     with open(abi_path) as json_file:
