@@ -16,34 +16,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-eth_address = w3.eth.accounts[9]
+eth_address = w3.eth.accounts[0]
 
-"""
-Planned Functions:
-    X- register_charity_event(charity_event_name: str, recipient: str, goal_amt: int, start_date: str, end_date: str)
-    X- update_charity_event_approval(charity_event_id: uint, is_approved: bool)
-    X- donate(charity_event_id: uint, amount: int, donor_name=None)
-        Note: will need to accept “hidden” private key to submit payment
-    X- get_charity_event(charity_event_id)
-    view_active_charity_events()
-        Note: return loop of get_charity_event
-    view_charity_event_history()
-        Note: return loop of get_charity_event
-    View_donations(event_id=0, donor_id=0)
-Planned User interface actions:
-    Register_charity_event 	
-    Update_charity_event_approval
-    Donate
-    View_donations
-    Support filter by event id or all event
-    Return Top X donations in last x days
-    Use view_donations
-    View_active_charity_events
-    View_charity_event_history
-    get_charity_event
-    Cancel event > call update_charity_event_approval (example)
-"""
-# Moved to front end
 def init_contract(abi_path:str, contract_address:str):
     """ Initialize a contract given the abi and address """
     with open(abi_path) as json_file:

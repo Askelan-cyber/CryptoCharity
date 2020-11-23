@@ -24,7 +24,7 @@ def register_charity_event():
     start_date = input("Start date for this event(YYYY/MM/DD): ")
     end_date = input("End date for this event(YYYY/MM/DD): ")
 
-    print(f"{event_name} has been registered successfully.")
+    print(f"Registering Event: {event_name} ...")
     return crypto_charity.register_charity_event(event_name, event_recipient, funding_goal, start_date, end_date)
 
 def add_admin():
@@ -86,17 +86,16 @@ def view_charity_event_info():
     event_info = crypto_charity.get_charity_event(charity_event_id)
     #print(event_info)
 
-    print(f"Charity Event ID: {event_info['charityEventAddress']}")
+    print()
+    print(f"Charity Event ID: {event_info['charityEventID']}")
     print(f"Event Name: {event_info['charityEventName']}")
     print(f"Start Date UTC: {event_info['startDate']}") 
     print(f"End Date UTC: {event_info['endDate']}") 
     print(f"Goal (ETH): {event_info['goalAmount']}")
     print(f"Total Donations (ETH): {event_info['totalDonations']}")
-    print(f"Event IPFS Link: {event_info['ipfsLink']}")
+    print(f"IPFS Link: {event_info['ipfsLink']}")
     print(f"Charity Address: {event_info['charityEventAddress']}")
     print(f"Event Approval Status: {event_info['isApproved']}")
-
-    return event_info
 
     # {'charityEventAddress': '0x4f37B8E25b59B30C28Ba2fC1cE3eFCdbD8D7784C',
     # 'charityEventID': 3,
@@ -108,6 +107,8 @@ def view_charity_event_info():
     # 'isApproved': True,
     # 'startDate': '2020/11/23',
     # 'totalDonations': 0.0}
+
+    return event_info
 
 
 
@@ -132,7 +133,7 @@ def view_all_charity_events():
     for charity_event in charity_event_list:
         #pprint(charity_event['args'])
         event_info = crypto_charity.get_charity_event(int(charity_event['args']['charityEventID']))
-        print(f"Event ID: {event_info['charityEventID']}, Event Name: {event_info['charityEventName']}, End Date: {event_info['endDate']}, Goal ETH: {event_info['goalAmount']}, Total Donations: {event_info['totalDonations']}")
+        print(f"Event ID: {event_info['charityEventID']}, Event: {event_info['charityEventName']}, End Date: {event_info['endDate']}, Goal ETH: {event_info['goalAmount']}, Total Donations: {event_info['totalDonations']}")
 
     # {'charityEventAddress': '0x6c44d9f5776cBD1E57b438FB8C59377fEa2E830b',
     # 'charityEventID': 2,
@@ -145,6 +146,7 @@ def view_all_charity_events():
     # 'startDate': '2020/11/23',
     # 'totalDonations': 0.0}
 
+    return
 
 def show_menu(menu, header=""):
     a = 0
@@ -169,85 +171,110 @@ recipient_menu = ["View All Charity Events", "View Total Donations", "View Itemi
 
 a = 0 
 while a != len(main_menu):
-    
-    a,text = show_menu(main_menu, "Main Menu") 
-    
-    if a == 1:
+    try:
+        a,text = show_menu(main_menu, "Main Menu") 
         
-        donor_menu_options = 0
-        
-        while donor_menu_options != len(donor_menu):
+        if a == 1:
             
-            donor_menu_options, donor_opt =  show_menu(donor_menu, "Donor Menu")
+            donor_menu_options = 0
             
-            if donor_menu_options == 1:
-                view_all_charity_events()
-                input("\nPress Enter to Continue")
+            while donor_menu_options != len(donor_menu):
+                try: 
+                    donor_menu_options, donor_opt =  show_menu(donor_menu, "Donor Menu")
+                    
+                    if donor_menu_options == 1:
+                        view_all_charity_events()
+                        input("\nPress Enter to Continue")
 
-            elif donor_menu_options == 2:
-                view_charity_event_info()
-                input("\nPress Enter to Continue")
+                    elif donor_menu_options == 2:
+                        view_charity_event_info()
+                        input("\nPress Enter to Continue")
 
-            elif donor_menu_options == 3:
-                donate()
-                input("\nPress Enter to Continue")
+                    elif donor_menu_options == 3:
+                        donate()
+                        input("\nPress Enter to Continue")
 
-            elif donor_menu_options == 4:
-                view_total_donations()
-                input("\nPress Enter to Continue")
+                    elif donor_menu_options == 4:
+                        view_total_donations()
+                        input("\nPress Enter to Continue")
 
-            elif donor_menu_options == 5:
-                view_itemized_donations()
-                input("\nPress Enter to Continue")
-        
-    elif a == 2:
-        
-        recipient_menu_options = 0
-        while recipient_menu_options != len(recipient_menu):
+                    elif donor_menu_options == 5:
+                        view_itemized_donations()
+                        input("\nPress Enter to Continue")
+                except:
+                    print()
+                    input("An exception occured, press Enter to try again.")
+                    print()
+                    continue
+
+        elif a == 2:
             
-            recipient_menu_options, recipient_opt =  show_menu(recipient_menu, "Recipient Menu")
-            if recipient_menu_options == 1:
-                view_all_charity_events()
-                input("\nPress Enter to Continue")
+            recipient_menu_options = 0
+            while recipient_menu_options != len(recipient_menu):
+                
+                try: 
+
+                    recipient_menu_options, recipient_opt =  show_menu(recipient_menu, "Recipient Menu")
+                    if recipient_menu_options == 1:
+                        view_all_charity_events()
+                        input("\nPress Enter to Continue")
+                    
+                    elif recipient_menu_options == 2:
+                        view_total_donations()
+                        input("\nPress Enter to Continue")
+
+                    elif recipient_menu_options == 3:
+                        view_itemized_donations()
+                        input("\nPress Enter to Continue")
+
+                    elif recipient_menu_options == 4:
+                        view_charity_event_info()
+                        input("\nPress Enter to Continue")
+                except:
+                    print()
+                    input("An exception occured, press Enter to try again.")
+                    print()
+                    continue
+
+        elif a == 3:
+            charity_admin_menu_options = 0
+            while charity_admin_menu_options != len(charity_admin_menu):
             
-            elif recipient_menu_options == 2:
-                view_total_donations()
-                input("\nPress Enter to Continue")
+                try:
 
-            elif recipient_menu_options == 3:
-                view_itemized_donations()
-                input("\nPress Enter to Continue")
+                    charity_admin_menu_options, charity_admin_opt = show_menu(charity_admin_menu, "Charity Administrator Menu")
+                    
+                    if charity_admin_menu_options == 1:
+                        view_all_charity_events()
+                        input("\nPress Enter to Continue")
 
-            elif recipient_menu_options == 4:
-                view_charity_event_info()
-                input("\nPress Enter to Continue")
+                    elif charity_admin_menu_options == 2:
+                        register_charity_event()
+                        input("\nPress Enter to Continue")
 
-    elif a == 3:
-        charity_admin_menu_options = 0
-        while charity_admin_menu_options != len(charity_admin_menu):
-            charity_admin_menu_options, charity_admin_opt = show_menu(charity_admin_menu, "Charity Administrator Menu")
-            
-            if charity_admin_menu_options == 1:
-                view_all_charity_events()
-                input("\nPress Enter to Continue")
+                    elif charity_admin_menu_options == 3:
+                        update_charity_event_approval()
+                        input("\nPress Enter to Continue")
 
-            elif charity_admin_menu_options == 2:
-                register_charity_event()
-                input("\nPress Enter to Continue")
+                    elif charity_admin_menu_options == 4:
+                        add_admin()
+                        input("\nPress Enter to Continue")
 
-            elif charity_admin_menu_options == 3:
-                update_charity_event_approval()
-                input("\nPress Enter to Continue")
+                    elif charity_admin_menu_options == 5:
+                        view_charity_event_info()
+                        input("\nPress Enter to Continue")
 
-            elif charity_admin_menu_options == 4:
-                add_admin()
-                input("\nPress Enter to Continue")
+                    elif charity_admin_menu_options == 6:
+                        cancel_charity_event()
+                        input("\nPress Enter to Continue")
+                except:
+                    print()
+                    input("An exception occured, press Enter to try again.")
+                    print()
+                    continue
 
-            elif charity_admin_menu_options == 5:
-                view_charity_event_info()
-                input("\nPress Enter to Continue")
-
-            elif charity_admin_menu_options == 6:
-                cancel_charity_event()
-                input("\nPress Enter to Continue")
-
+    except:
+        print()
+        input("An exception occured, press Enter to try again.")
+        print()
+        continue
